@@ -1,0 +1,470 @@
+{
+  "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+  "contentVersion": "1.1.0.0",
+  "parameters": {},
+  "triggers": {
+    "manual": {
+      "type": "Request",
+      "kind": "Button",
+      "inputs": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "fileName": {
+              "type": "string"
+            },
+            "fileContentBase64": {
+              "type": "string"
+            },
+            "docType": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "fileName",
+            "fileContentBase64"
+          ]
+        }
+      }
+    }
+  },
+  "actions": {
+    "Set_docType": {
+      "type": "InitializeVariable",
+      "inputs": {
+        "variables": [
+          {
+            "name": "docType",
+            "type": "string",
+            "value": "@{coalesce(triggerBody()?['docType'], if(contains(toLower(triggerBody()?['fileName']), 'cfs'), 'cfs', 'intake'))}"
+          }
+        ]
+      }
+    },
+    "HTTP_Call_AI": {
+      "type": "Http",
+      "runAfter": {
+        "Set_docType": [
+          "Succeeded"
+        ]
+      },
+      "inputs": {
+        "method": "POST",
+        "uri": "@{environmentVariables('Env_FunctionUrl')}",
+        "headers": {
+          "x-functions-key": "@{environmentVariables('Env_FunctionKey')}",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "modelId": "acba1d64-52f2-440b-b175-5849fa4cdead",
+          "documentBase64": "@{triggerBody()?['fileContentBase64']}",
+          "docType": "@{variables('docType')}"
+        }
+      }
+    },
+    "Compose_Row": {
+      "type": "Compose",
+      "runAfter": {
+        "HTTP_Call_AI": [
+          "Succeeded"
+        ]
+      },
+      "inputs": {
+        "Referrer": "@{coalesce(body('HTTP_Call_AI')?['Referrer'], '')}",
+        "Designation": "@{coalesce(body('HTTP_Call_AI')?['Designation'], '')}",
+        "refPhone": "@{coalesce(body('HTTP_Call_AI')?['refPhone'], '')}",
+        "ptLocation": "@{coalesce(body('HTTP_Call_AI')?['ptLocation'], '')}",
+        "AMO": "@{coalesce(body('HTTP_Call_AI')?['AMO'], '')}",
+        "ID_Specialist": "@{coalesce(body('HTTP_Call_AI')?['ID_Specialist'], '')}",
+        "gpName": "@{coalesce(body('HTTP_Call_AI')?['gpName'], '')}",
+        "gpPhone": "@{coalesce(body('HTTP_Call_AI')?['gpPhone'], '')}",
+        "gpLetter": "@{coalesce(body('HTTP_Call_AI')?['gpLetter'], '')}",
+        "verbalAgreement": "@{coalesce(body('HTTP_Call_AI')?['verbalAgreement'], '')}",
+        "hithAgreement": "@{coalesce(body('HTTP_Call_AI')?['hithAgreement'], '')}",
+        "welcomeSMS": "@{coalesce(body('HTTP_Call_AI')?['welcomeSMS'], '')}",
+        "Fund": "@{coalesce(body('HTTP_Call_AI')?['Fund'], '')}",
+        "Fund_No": "@{coalesce(body('HTTP_Call_AI')?['Fund_No'], '')}",
+        "MRN": "@{coalesce(body('HTTP_Call_AI')?['MRN'], '')}",
+        "ptAge": "@{coalesce(body('HTTP_Call_AI')?['ptAge'], '')}",
+        "ptSex": "@{coalesce(body('HTTP_Call_AI')?['ptSex'], '')}",
+        "hithDx": "@{coalesce(body('HTTP_Call_AI')?['hithDx'], '')}",
+        "hithMx": "@{coalesce(body('HTTP_Call_AI')?['hithMx'], '')}",
+        "intakeNote": "@{coalesce(body('HTTP_Call_AI')?['intakeNote'], '')}",
+        "resusPlan": "@{coalesce(body('HTTP_Call_AI')?['resusPlan'], '')}",
+        "PMHx": "@{coalesce(body('HTTP_Call_AI')?['PMHx'], '')}",
+        "micro": "@{coalesce(body('HTTP_Call_AI')?['micro'], '')}",
+        "eGFR": "@{coalesce(body('HTTP_Call_AI')?['eGFR'], '')}",
+        "WCC": "@{coalesce(body('HTTP_Call_AI')?['WCC'], '')}",
+        "CRP": "@{coalesce(body('HTTP_Call_AI')?['CRP'], '')}",
+        "Allergies": "@{coalesce(body('HTTP_Call_AI')?['Allergies'], '')}",
+        "Alerts": "@{coalesce(body('HTTP_Call_AI')?['Alerts'], '')}",
+        "socialHx": "@{coalesce(body('HTTP_Call_AI')?['socialHx'], '')}",
+        "communityService": "@{coalesce(body('HTTP_Call_AI')?['communityService'], '')}",
+        "HVRA": "@{coalesce(body('HTTP_Call_AI')?['HVRA'], '')}",
+        "liaisonAx": "@{coalesce(body('HTTP_Call_AI')?['liaisonAx'], '')}",
+        "safetyNet": "@{coalesce(body('HTTP_Call_AI')?['safetyNet'], '')}",
+        "venousAccess": "@{coalesce(body('HTTP_Call_AI')?['venousAccess'], '')}",
+        "accessDevice": "@{coalesce(body('HTTP_Call_AI')?['accessDevice'], '')}",
+        "vitalSigns": "@{coalesce(body('HTTP_Call_AI')?['vitalSigns'], '')}",
+        "ACC": "@{coalesce(body('HTTP_Call_AI')?['ACC'], '')}",
+        "Height": "@{coalesce(body('HTTP_Call_AI')?['Height'], '')}",
+        "Weight": "@{coalesce(body('HTTP_Call_AI')?['Weight'], '')}",
+        "painAx": "@{coalesce(body('HTTP_Call_AI')?['painAx'], '')}",
+        "painMx": "@{coalesce(body('HTTP_Call_AI')?['painMx'], '')}",
+        "woundPlan": "@{coalesce(body('HTTP_Call_AI')?['woundPlan'], '')}",
+        "foodIntake": "@{coalesce(body('HTTP_Call_AI')?['foodIntake'], '')}",
+        "fluidIntake": "@{coalesce(body('HTTP_Call_AI')?['fluidIntake'], '')}",
+        "Elimination": "@{coalesce(body('HTTP_Call_AI')?['Elimination'], '')}",
+        "mobility": "@{coalesce(body('HTTP_Call_AI')?['mobility'], '')}",
+        "ADLs": "@{coalesce(body('HTTP_Call_AI')?['ADLs'], '')}",
+        "firstVisit": "@{coalesce(body('HTTP_Call_AI')?['firstVisit'], '')}",
+        "firstTime": "@{coalesce(body('HTTP_Call_AI')?['firstTime'], '')}",
+        "TxPlan": "@{coalesce(body('HTTP_Call_AI')?['TxPlan'], '')}",
+        "reviewAMO": "@{coalesce(body('HTTP_Call_AI')?['reviewAMO'], '')}",
+        "amoReview": "@{coalesce(body('HTTP_Call_AI')?['amoReview'], '')}",
+        "hithEDD": "@{coalesce(body('HTTP_Call_AI')?['hithEDD'], '')}"
+      }
+    },
+    "Init_Source": {
+      "type": "InitializeVariable",
+      "runAfter": {
+        "Compose_Row": [
+          "Succeeded"
+        ]
+      },
+      "inputs": {
+        "variables": [
+          {
+            "name": "Source",
+            "type": "string",
+            "value": "@{variables('docType')}"
+          }
+        ]
+      }
+    },
+    "Init_LastUpdated": {
+      "type": "InitializeVariable",
+      "runAfter": {
+        "Init_Source": [
+          "Succeeded"
+        ]
+      },
+      "inputs": {
+        "variables": [
+          {
+            "name": "LastUpdated",
+            "type": "string",
+            "value": "@{utcNow()}"
+          }
+        ]
+      }
+    },
+    "Excel_Add_Row": {
+      "type": "OpenApiConnection",
+      "runAfter": {
+        "Init_LastUpdated": [
+          "Succeeded"
+        ]
+      },
+      "inputs": {
+        "host": {
+          "connectionName": "shared_excelonlinebusiness",
+          "operationId": "AddArowIntoATable",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+        },
+        "parameters": {
+          "source": "SharePointSite",
+          "dataset": "@{environmentVariables('Env_SiteUrl')}",
+          "file": "@{environmentVariables('Env_ExcelPath')}",
+          "table": "@{environmentVariables('Env_ExcelTable')}",
+          "item": {
+            "Referrer": "@{outputs('Compose_Row')?['Referrer']}",
+            "Designation": "@{outputs('Compose_Row')?['Designation']}",
+            "refPhone": "@{outputs('Compose_Row')?['refPhone']}",
+            "ptLocation": "@{outputs('Compose_Row')?['ptLocation']}",
+            "AMO": "@{outputs('Compose_Row')?['AMO']}",
+            "ID_Specialist": "@{outputs('Compose_Row')?['ID_Specialist']}",
+            "gpName": "@{outputs('Compose_Row')?['gpName']}",
+            "gpPhone": "@{outputs('Compose_Row')?['gpPhone']}",
+            "gpLetter": "@{outputs('Compose_Row')?['gpLetter']}",
+            "verbalAgreement": "@{outputs('Compose_Row')?['verbalAgreement']}",
+            "hithAgreement": "@{outputs('Compose_Row')?['hithAgreement']}",
+            "welcomeSMS": "@{outputs('Compose_Row')?['welcomeSMS']}",
+            "Fund": "@{outputs('Compose_Row')?['Fund']}",
+            "Fund_No": "@{outputs('Compose_Row')?['Fund_No']}",
+            "MRN": "@{outputs('Compose_Row')?['MRN']}",
+            "ptAge": "@{outputs('Compose_Row')?['ptAge']}",
+            "ptSex": "@{outputs('Compose_Row')?['ptSex']}",
+            "hithDx": "@{outputs('Compose_Row')?['hithDx']}",
+            "hithMx": "@{outputs('Compose_Row')?['hithMx']}",
+            "intakeNote": "@{outputs('Compose_Row')?['intakeNote']}",
+            "resusPlan": "@{outputs('Compose_Row')?['resusPlan']}",
+            "PMHx": "@{outputs('Compose_Row')?['PMHx']}",
+            "micro": "@{outputs('Compose_Row')?['micro']}",
+            "eGFR": "@{outputs('Compose_Row')?['eGFR']}",
+            "WCC": "@{outputs('Compose_Row')?['WCC']}",
+            "CRP": "@{outputs('Compose_Row')?['CRP']}",
+            "Allergies": "@{outputs('Compose_Row')?['Allergies']}",
+            "Alerts": "@{outputs('Compose_Row')?['Alerts']}",
+            "socialHx": "@{outputs('Compose_Row')?['socialHx']}",
+            "communityService": "@{outputs('Compose_Row')?['communityService']}",
+            "HVRA": "@{outputs('Compose_Row')?['HVRA']}",
+            "liaisonAx": "@{outputs('Compose_Row')?['liaisonAx']}",
+            "safetyNet": "@{outputs('Compose_Row')?['safetyNet']}",
+            "venousAccess": "@{outputs('Compose_Row')?['venousAccess']}",
+            "accessDevice": "@{outputs('Compose_Row')?['accessDevice']}",
+            "vitalSigns": "@{outputs('Compose_Row')?['vitalSigns']}",
+            "ACC": "@{outputs('Compose_Row')?['ACC']}",
+            "Height": "@{outputs('Compose_Row')?['Height']}",
+            "Weight": "@{outputs('Compose_Row')?['Weight']}",
+            "painAx": "@{outputs('Compose_Row')?['painAx']}",
+            "painMx": "@{outputs('Compose_Row')?['painMx']}",
+            "woundPlan": "@{outputs('Compose_Row')?['woundPlan']}",
+            "foodIntake": "@{outputs('Compose_Row')?['foodIntake']}",
+            "fluidIntake": "@{outputs('Compose_Row')?['fluidIntake']}",
+            "Elimination": "@{outputs('Compose_Row')?['Elimination']}",
+            "mobility": "@{outputs('Compose_Row')?['mobility']}",
+            "ADLs": "@{outputs('Compose_Row')?['ADLs']}",
+            "firstVisit": "@{outputs('Compose_Row')?['firstVisit']}",
+            "firstTime": "@{outputs('Compose_Row')?['firstTime']}",
+            "TxPlan": "@{outputs('Compose_Row')?['TxPlan']}",
+            "reviewAMO": "@{outputs('Compose_Row')?['reviewAMO']}",
+            "amoReview": "@{outputs('Compose_Row')?['amoReview']}",
+            "hithEDD": "@{outputs('Compose_Row')?['hithEDD']}",
+            "Source": "@{variables('Source')}",
+            "LastUpdated": "@{variables('LastUpdated')}"
+          }
+        },
+        "authentication": "@connection('shared_excelonlinebusiness')"
+      }
+    },
+    "List_rows_for_MRN": {
+      "type": "OpenApiConnection",
+      "runAfter": {
+        "Excel_Add_Row": [
+          "Succeeded"
+        ]
+      },
+      "inputs": {
+        "host": {
+          "connectionName": "shared_excelonlinebusiness",
+          "operationId": "GetRows",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+        },
+        "parameters": {
+          "source": "SharePointSite",
+          "dataset": "@{environmentVariables('Env_SiteUrl')}",
+          "file": "@{environmentVariables('Env_ExcelPath')}",
+          "table": "@{environmentVariables('Env_ExcelTable')}",
+          "$filter": "@{concat('MRN eq '' , outputs('Compose_Row')?['MRN'] , ''')}",
+          "$top": 200
+        },
+        "authentication": "@connection('shared_excelonlinebusiness')"
+      }
+    },
+    "Filter_intake": {
+      "type": "Query",
+      "runAfter": {
+        "List_rows_for_MRN": [
+          "Succeeded"
+        ]
+      },
+      "inputs": {
+        "from": "@body('List_rows_for_MRN')?['value']",
+        "where": "@equals(toLower(item()?['Source']), 'intake')"
+      }
+    },
+    "Filter_cfs": {
+      "type": "Query",
+      "runAfter": {
+        "Filter_intake": [
+          "Succeeded"
+        ]
+      },
+      "inputs": {
+        "from": "@body('List_rows_for_MRN')?['value']",
+        "where": "@equals(toLower(item()?['Source']), 'cfs')"
+      }
+    },
+    "Compose_Merged": {
+      "type": "Compose",
+      "runAfter": {
+        "Filter_cfs": [
+          "Succeeded"
+        ]
+      },
+      "inputs": {
+        "Referrer": "@{coalesce(first(body('Filter_intake'))?['Referrer'], first(body('Filter_cfs'))?['Referrer'], '')}",
+        "Designation": "@{coalesce(first(body('Filter_intake'))?['Designation'], first(body('Filter_cfs'))?['Designation'], '')}",
+        "refPhone": "@{coalesce(first(body('Filter_intake'))?['refPhone'], first(body('Filter_cfs'))?['refPhone'], '')}",
+        "ptLocation": "@{coalesce(first(body('Filter_intake'))?['ptLocation'], first(body('Filter_cfs'))?['ptLocation'], '')}",
+        "AMO": "@{coalesce(first(body('Filter_intake'))?['AMO'], first(body('Filter_cfs'))?['AMO'], '')}",
+        "ID_Specialist": "@{coalesce(first(body('Filter_intake'))?['ID_Specialist'], first(body('Filter_cfs'))?['ID_Specialist'], '')}",
+        "gpName": "@{coalesce(first(body('Filter_intake'))?['gpName'], first(body('Filter_cfs'))?['gpName'], '')}",
+        "gpPhone": "@{coalesce(first(body('Filter_intake'))?['gpPhone'], first(body('Filter_cfs'))?['gpPhone'], '')}",
+        "gpLetter": "@{coalesce(first(body('Filter_intake'))?['gpLetter'], first(body('Filter_cfs'))?['gpLetter'], '')}",
+        "verbalAgreement": "@{coalesce(first(body('Filter_intake'))?['verbalAgreement'], first(body('Filter_cfs'))?['verbalAgreement'], '')}",
+        "hithAgreement": "@{coalesce(first(body('Filter_intake'))?['hithAgreement'], first(body('Filter_cfs'))?['hithAgreement'], '')}",
+        "welcomeSMS": "@{coalesce(first(body('Filter_intake'))?['welcomeSMS'], first(body('Filter_cfs'))?['welcomeSMS'], '')}",
+        "Fund": "@{coalesce(first(body('Filter_intake'))?['Fund'], first(body('Filter_cfs'))?['Fund'], '')}",
+        "Fund_No": "@{coalesce(first(body('Filter_intake'))?['Fund_No'], first(body('Filter_cfs'))?['Fund_No'], '')}",
+        "MRN": "@{coalesce(first(body('Filter_intake'))?['MRN'], first(body('Filter_cfs'))?['MRN'], '')}",
+        "ptAge": "@{coalesce(first(body('Filter_intake'))?['ptAge'], first(body('Filter_cfs'))?['ptAge'], '')}",
+        "ptSex": "@{coalesce(first(body('Filter_intake'))?['ptSex'], first(body('Filter_cfs'))?['ptSex'], '')}",
+        "hithDx": "@{coalesce(first(body('Filter_intake'))?['hithDx'], first(body('Filter_cfs'))?['hithDx'], '')}",
+        "hithMx": "@{coalesce(first(body('Filter_intake'))?['hithMx'], first(body('Filter_cfs'))?['hithMx'], '')}",
+        "intakeNote": "@{coalesce(first(body('Filter_intake'))?['intakeNote'], first(body('Filter_cfs'))?['intakeNote'], '')}",
+        "resusPlan": "@{coalesce(first(body('Filter_intake'))?['resusPlan'], first(body('Filter_cfs'))?['resusPlan'], '')}",
+        "PMHx": "@{coalesce(first(body('Filter_intake'))?['PMHx'], first(body('Filter_cfs'))?['PMHx'], '')}",
+        "micro": "@{coalesce(first(body('Filter_intake'))?['micro'], first(body('Filter_cfs'))?['micro'], '')}",
+        "eGFR": "@{coalesce(first(body('Filter_intake'))?['eGFR'], first(body('Filter_cfs'))?['eGFR'], '')}",
+        "WCC": "@{coalesce(first(body('Filter_intake'))?['WCC'], first(body('Filter_cfs'))?['WCC'], '')}",
+        "CRP": "@{coalesce(first(body('Filter_intake'))?['CRP'], first(body('Filter_cfs'))?['CRP'], '')}",
+        "Allergies": "@{coalesce(first(body('Filter_intake'))?['Allergies'], first(body('Filter_cfs'))?['Allergies'], '')}",
+        "Alerts": "@{coalesce(first(body('Filter_intake'))?['Alerts'], first(body('Filter_cfs'))?['Alerts'], '')}",
+        "socialHx": "@{coalesce(first(body('Filter_intake'))?['socialHx'], first(body('Filter_cfs'))?['socialHx'], '')}",
+        "communityService": "@{coalesce(first(body('Filter_intake'))?['communityService'], first(body('Filter_cfs'))?['communityService'], '')}",
+        "HVRA": "@{coalesce(first(body('Filter_intake'))?['HVRA'], first(body('Filter_cfs'))?['HVRA'], '')}",
+        "liaisonAx": "@{coalesce(first(body('Filter_intake'))?['liaisonAx'], first(body('Filter_cfs'))?['liaisonAx'], '')}",
+        "safetyNet": "@{coalesce(first(body('Filter_intake'))?['safetyNet'], first(body('Filter_cfs'))?['safetyNet'], '')}",
+        "venousAccess": "@{coalesce(first(body('Filter_intake'))?['venousAccess'], first(body('Filter_cfs'))?['venousAccess'], '')}",
+        "accessDevice": "@{coalesce(first(body('Filter_intake'))?['accessDevice'], first(body('Filter_cfs'))?['accessDevice'], '')}",
+        "vitalSigns": "@{coalesce(first(body('Filter_intake'))?['vitalSigns'], first(body('Filter_cfs'))?['vitalSigns'], '')}",
+        "ACC": "@{coalesce(first(body('Filter_intake'))?['ACC'], first(body('Filter_cfs'))?['ACC'], '')}",
+        "Height": "@{coalesce(first(body('Filter_intake'))?['Height'], first(body('Filter_cfs'))?['Height'], '')}",
+        "Weight": "@{coalesce(first(body('Filter_intake'))?['Weight'], first(body('Filter_cfs'))?['Weight'], '')}",
+        "painAx": "@{coalesce(first(body('Filter_intake'))?['painAx'], first(body('Filter_cfs'))?['painAx'], '')}",
+        "painMx": "@{coalesce(first(body('Filter_intake'))?['painMx'], first(body('Filter_cfs'))?['painMx'], '')}",
+        "woundPlan": "@{coalesce(first(body('Filter_intake'))?['woundPlan'], first(body('Filter_cfs'))?['woundPlan'], '')}",
+        "foodIntake": "@{coalesce(first(body('Filter_intake'))?['foodIntake'], first(body('Filter_cfs'))?['foodIntake'], '')}",
+        "fluidIntake": "@{coalesce(first(body('Filter_intake'))?['fluidIntake'], first(body('Filter_cfs'))?['fluidIntake'], '')}",
+        "Elimination": "@{coalesce(first(body('Filter_intake'))?['Elimination'], first(body('Filter_cfs'))?['Elimination'], '')}",
+        "mobility": "@{coalesce(first(body('Filter_intake'))?['mobility'], first(body('Filter_cfs'))?['mobility'], '')}",
+        "ADLs": "@{coalesce(first(body('Filter_intake'))?['ADLs'], first(body('Filter_cfs'))?['ADLs'], '')}",
+        "firstVisit": "@{coalesce(first(body('Filter_intake'))?['firstVisit'], first(body('Filter_cfs'))?['firstVisit'], '')}",
+        "firstTime": "@{coalesce(first(body('Filter_intake'))?['firstTime'], first(body('Filter_cfs'))?['firstTime'], '')}",
+        "TxPlan": "@{coalesce(first(body('Filter_intake'))?['TxPlan'], first(body('Filter_cfs'))?['TxPlan'], '')}",
+        "reviewAMO": "@{coalesce(first(body('Filter_intake'))?['reviewAMO'], first(body('Filter_cfs'))?['reviewAMO'], '')}",
+        "amoReview": "@{coalesce(first(body('Filter_intake'))?['amoReview'], first(body('Filter_cfs'))?['amoReview'], '')}",
+        "hithEDD": "@{coalesce(first(body('Filter_intake'))?['hithEDD'], first(body('Filter_cfs'))?['hithEDD'], '')}"
+      }
+    },
+    "Condition_HasBoth": {
+      "type": "If",
+      "runAfter": {
+        "Compose_Merged": [
+          "Succeeded"
+        ]
+      },
+      "expression": "@and(greater(length(body('Filter_intake')),0), greater(length(body('Filter_cfs')),0))",
+      "actions": {
+        "Word_Populate": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_wordonlinebusiness",
+              "operationId": "PopulateDocument",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_wordonlinebusiness"
+            },
+            "parameters": {
+              "source": "SharePointSite",
+              "dataset": "@{environmentVariables('Env_SiteUrl')}",
+              "documentLibrary": "Shared Documents",
+              "documentLocation": "@{environmentVariables('Env_WordPath')}",
+              "data": "@outputs('Compose_Merged')"
+            },
+            "authentication": "@connection('shared_wordonlinebusiness')"
+          }
+        },
+        "Create_Word_File": {
+          "type": "OpenApiConnection",
+          "runAfter": {
+            "Word_Populate": [
+              "Succeeded"
+            ]
+          },
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "CreateFile",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@{environmentVariables('Env_SiteUrl')}",
+              "folderPath": "@{environmentVariables('Env_OutputFolder')}",
+              "name": "@{concat(formatDateTime(utcNow(),'yyyyMMdd-HHmmss'),'_', coalesce(outputs('Compose_Merged')?['MRN'],'unknownMRN'),'_Liaison.docx')}",
+              "body": "@body('Word_Populate')?['document']"
+            },
+            "authentication": "@connection('shared_sharepointonline')"
+          }
+        },
+        "Convert_to_PDF": {
+          "type": "OpenApiConnection",
+          "runAfter": {
+            "Create_Word_File": [
+              "Succeeded"
+            ]
+          },
+          "inputs": {
+            "host": {
+              "connectionName": "shared_wordonlinebusiness",
+              "operationId": "ConvertWordDocumentToPDF",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_wordonlinebusiness"
+            },
+            "parameters": {
+              "document": "@body('Word_Populate')?['document']"
+            },
+            "authentication": "@connection('shared_wordonlinebusiness')"
+          }
+        },
+        "Create_PDF_File": {
+          "type": "OpenApiConnection",
+          "runAfter": {
+            "Convert_to_PDF": [
+              "Succeeded"
+            ]
+          },
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "CreateFile",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@{environmentVariables('Env_SiteUrl')}",
+              "folderPath": "@{environmentVariables('Env_OutputFolder')}",
+              "name": "@{concat(formatDateTime(utcNow(),'yyyyMMdd-HHmmss'),'_', coalesce(outputs('Compose_Merged')?['MRN'],'unknownMRN'),'_Liaison.pdf')}",
+              "body": "@body('Convert_to_PDF')?['PDF']"
+            },
+            "authentication": "@connection('shared_sharepointonline')"
+          }
+        }
+      },
+      "else": {
+        "actions": {
+          "No_Generate": {
+            "type": "Compose",
+            "inputs": "Waiting for the other PDF (intake/cfs) for this MRN)"
+          }
+        }
+      }
+    },
+    "Respond_to_Parent": {
+      "type": "Response",
+      "runAfter": {
+        "Condition_HasBoth": [
+          "Succeeded"
+        ]
+      },
+      "kind": "Button",
+      "inputs": {
+        "statusCode": 200,
+        "body": {
+          "docType": "@{variables('docType')}",
+          "generated": "@{if(equals(actions('Condition_HasBoth')?['status'],'Succeeded'), 'true','false')}"
+        }
+      }
+    }
+  },
+  "outputs": {}
+}

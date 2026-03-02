@@ -1,0 +1,15 @@
+{
+  "name": "NSLHD.HITH.Liaison",
+  "version": "1.1.0.0",
+  "created": "2026-02-25T03:51:12.958809Z",
+  "environmentVariables": {
+    "Env_SiteUrl": "https://nswhealth.sharepoint.com/sites/NSLHDHITH-Resources",
+    "Env_ScanningFolder": "/GP Liaison/07 Intake to Admit/Scanning",
+    "Env_ExcelPath": "/GP Liaison/07 Intake to Admit/Data/form-data.xlsx",
+    "Env_ExcelTable": "tbl_doc_data",
+    "Env_WordPath": "/GP Liaison/07 Intake to Admit/Liaison/Liaison Admit Template.docx",
+    "Env_OutputFolder": "/GP Liaison/07 Intake to Admit/Output/",
+    "Env_FunctionUrl": "https://REPLACE-FUNCTION-URL",
+    "Env_FunctionKey": "REPLACE-FUNCTION-KEY"
+  }
+}

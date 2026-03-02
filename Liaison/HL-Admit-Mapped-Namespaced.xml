@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hl:HLAdmitTemplate xmlns:hl="http://nswhealth.nsw.gov.au/hith/admit">
+
+  <!-- I: Identification / Referrer -->
+  <hl:ISection>
+    <hl:Referrer></hl:Referrer>
+    <hl:Designation></hl:Designation>
+    <hl:refPhone></hl:refPhone>
+    <hl:ptLocation></hl:ptLocation>
+    <hl:AMO></hl:AMO>
+    <hl:ID_Specialist></hl:ID_Specialist>
+    <hl:gpName></hl:gpName>
+    <hl:gpPhone></hl:gpPhone>
+    <hl:gpLetter></hl:gpLetter>
+    <hl:verbalAgreement></hl:verbalAgreement>
+    <hl:hithAgreement></hl:hithAgreement>
+    <hl:welcomeSMS></hl:welcomeSMS>
+    <hl:Fund></hl:Fund>
+    <hl:Fund_No></hl:Fund_No>
+    <hl:MRN></hl:MRN>
+  </hl:ISection>
+
+  <!-- S: Situation / Summary -->
+  <hl:SSection>
+    <hl:ptAge></hl:ptAge>
+    <hl:ptSex></hl:ptSex>
+    <hl:ptLocation></hl:ptLocation>
+    <hl:hithDx></hl:hithDx>
+    <hl:hithMx></hl:hithMx>
+  </hl:SSection>
+
+  <!-- B: Background -->
+  <hl:BSection>
+    <hl:intakeNote></hl:intakeNote>
+    <hl:resusPlan></hl:resusPlan>
+    <hl:PMHx></hl:PMHx>
+    <hl:micro></hl:micro>
+    <hl:eGFR></hl:eGFR>
+    <hl:WCC></hl:WCC>
+    <hl:CRP></hl:CRP>
+    <hl:Allergies></hl:Allergies>
+    <hl:Alerts></hl:Alerts>
+    <hl:socialHx></hl:socialHx>
+    <hl:communityService></hl:communityService>
+    <hl:HVRA></hl:HVRA>
+  </hl:BSection>
+
+  <!-- A: Assessment / Actions -->
+  <hl:ASection>
+    <hl:liaisonAx></hl:liaisonAx>
+    <hl:safetyNet></hl:safetyNet>
+    <hl:venousAccess></hl:venousAccess>
+    <hl:accessDevice></hl:accessDevice>
+    <hl:vitalSigns></hl:vitalSigns>
+    <hl:ACC></hl:ACC>
+    <hl:Height></hl:Height>
+    <hl:Weight></hl:Weight>
+    <hl:painAx></hl:painAx>
+    <hl:painMx></hl:painMx>
+    <hl:woundPlan></hl:woundPlan>
+    <hl:foodIntake></hl:foodIntake>
+    <hl:fluidIntake></hl:fluidIntake>
+    <hl:Elimination></hl:Elimination>
+    <hl:mobility></hl:mobility>
+    <hl:ADLs></hl:ADLs>
+  </hl:ASection>
+
+  <!-- R: Recommendations / Review -->
+  <hl:RSection>
+    <hl:firstVisit></hl:firstVisit>
+    <hl:firstTime></hl:firstTime>
+    <hl:TxPlan></hl:TxPlan>
+    <hl:reviewAMO></hl:reviewAMO>
+    <hl:amoReview></hl:amoReview>
+    <hl:hithEDD></hl:hithEDD>
+  </hl:RSection>
+
+</hl:HLAdmitTemplate>
