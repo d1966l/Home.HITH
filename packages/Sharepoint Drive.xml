@@ -1,0 +1,324 @@
+{
+  "@odata.context": "https://nswhealth.sharepoint.com/sites/NSLHDHITH-Resources/_api/v2.0/$metadata#drive",
+  "value": [
+    {
+      "createdBy": {
+        "user": {
+          "email": "David.Lewis1@health.nsw.gov.au",
+          "id": "8389d72c-6428-43f4-a88d-fe69f249f338",
+          "displayName": "David Lewis (Northern Sydney LHD)"
+        }
+      },
+      "createdDateTime": "2024-04-04T12:15:18Z",
+      "description": "",
+      "id": "b!dHn-JRylhkSnuMXEfNHvWgAlaJUeGHlIsoOz628jDkrX0y3HfeJISJrRVqkNEH21",
+      "lastModifiedBy": {
+        "user": {
+          "email": "David.Lewis1@health.nsw.gov.au",
+          "id": "8389d72c-6428-43f4-a88d-fe69f249f338",
+          "displayName": "David Lewis (Northern Sydney LHD)"
+        }
+      },
+      "lastModifiedDateTime": "2026-01-28T01:18:15Z",
+      "name": "Operational Resources",
+      "webUrl": "https://nswhealth.sharepoint.com/sites/NSLHDHITH-Resources/Operational%20Resources",
+      "driveType": "documentLibrary",
+      "owner": {
+        "user": {
+          "email": "Amy.Herdman@health.nsw.gov.au",
+          "id": "81ceea66-c143-48c3-ba89-98ca5a06416c",
+          "displayName": "Amy Herdman (Northern Sydney LHD)"
+        }
+      },
+      "quota": {
+
+      }
+    },
+    {
+      "createdBy": {
+        "user": {
+          "email": "heather.thomson@health.nsw.gov.au",
+          "id": "014ca4d3-9a98-4cab-bee2-2cad795d44f2",
+          "displayName": "Heather Thomson (Northern Sydney LHD)"
+        }
+      },
+      "createdDateTime": "2024-08-15T03:15:59Z",
+      "description": "",
+      "id": "b!dHn-JRylhkSnuMXEfNHvWgAlaJUeGHlIsoOz628jDkqulqnXO8WDSYweWkDApnuA",
+      "lastModifiedBy": {
+        "user": {
+          "email": "Clara.Hinds@health.nsw.gov.au",
+          "id": "e1fcc2da-c5c7-493f-9738-789cc91b0f36",
+          "displayName": "Clara Hinds (Northern Sydney LHD)"
+        }
+      },
+      "lastModifiedDateTime": "2025-12-18T04:12:24Z",
+      "name": "Work Health & Safety",
+      "webUrl": "https://nswhealth.sharepoint.com/sites/NSLHDHITH-Resources/Work%20Health%20%20Safety",
+      "driveType": "documentLibrary",
+      "owner": {
+        "user": {
+          "email": "Amy.Herdman@health.nsw.gov.au",
+          "id": "81ceea66-c143-48c3-ba89-98ca5a06416c",
+          "displayName": "Amy Herdman (Northern Sydney LHD)"
+        }
+      },
+      "quota": {
+
+      }
+    },
+    {
+      "createdBy": {
+        "user": {
+          "email": "heather.thomson@health.nsw.gov.au",
+          "id": "014ca4d3-9a98-4cab-bee2-2cad795d44f2",
+          "displayName": "Heather Thomson (Northern Sydney LHD)"
+        }
+      },
+      "createdDateTime": "2024-05-30T03:32:39Z",
+      "description": "",
+      "id": "b!dHn-JRylhkSnuMXEfNHvWgAlaJUeGHlIsoOz628jDkrtQokPEBunRY39YYHYbhoX",
+      "lastModifiedBy": {
+        "user": {
+          "displayName": "SharePoint App"
+        }
+      },
+      "lastModifiedDateTime": "2025-11-06T12:30:11Z",
+      "name": "Huddles",
+      "webUrl": "https://nswhealth.sharepoint.com/sites/NSLHDHITH-Resources/Huddles",
+      "driveType": "documentLibrary",
+      "owner": {
+        "user": {
+          "email": "Amy.Herdman@health.nsw.gov.au",
+          "id": "81ceea66-c143-48c3-ba89-98ca5a06416c",
+          "displayName": "Amy Herdman (Northern Sydney LHD)"
+        }
+      },
+      "quota": {
+
+      }
+    },
+    {
+      "createdBy": {
+        "user": {
+          "email": "heather.thomson@health.nsw.gov.au",
+          "id": "014ca4d3-9a98-4cab-bee2-2cad795d44f2",
+          "displayName": "Heather Thomson (Northern Sydney LHD)"
+        }
+      },
+      "createdDateTime": "2024-04-30T00:58:41Z",
+      "description": "",
+      "id": "b!dHn-JRylhkSnuMXEfNHvWgAlaJUeGHlIsoOz628jDko0ZCXRYUa7SpeylFLjRJGp",
+      "lastModifiedBy": {
+        "user": {
+          "email": "heather.thomson@health.nsw.gov.au",
+          "id": "014ca4d3-9a98-4cab-bee2-2cad795d44f2",
+          "displayName": "Heather Thomson (Northern Sydney LHD)"
+        }
+      },
+      "lastModifiedDateTime": "2024-04-30T00:58:41Z",
+      "name": "CMP Logo",
+      "webUrl": "https://nswhealth.sharepoint.com/sites/NSLHDHITH-Resources/CMP%20Logo",
+      "driveType": "documentLibrary",
+      "owner": {
+        "user": {
+          "email": "Amy.Herdman@health.nsw.gov.au",
+          "id": "81ceea66-c143-48c3-ba89-98ca5a06416c",
+          "displayName": "Amy Herdman (Northern Sydney LHD)"
+        }
+      },
+      "quota": {
+
+      }
+    },
+    {
+      "createdBy": {
+        "user": {
+          "email": "heather.thomson@health.nsw.gov.au",
+          "id": "014ca4d3-9a98-4cab-bee2-2cad795d44f2",
+          "displayName": "Heather Thomson (Northern Sydney LHD)"
+        }
+      },
+      "createdDateTime": "2024-11-27T01:08:32Z",
+      "description": "",
+      "id": "b!dHn-JRylhkSnuMXEfNHvWgAlaJUeGHlIsoOz628jDkr0OUgq5n7GQJvuoSSQsUSt",
+      "lastModifiedDateTime": "2025-03-02T20:44:49Z",
+      "name": "Policy and Procedure Sign Off",
+      "webUrl": "https://nswhealth.sharepoint.com/sites/NSLHDHITH-Resources/Policy%20and%20Procedure%20Sign%20Off",
+      "driveType": "documentLibrary",
+      "owner": {
+        "user": {
+          "email": "Amy.Herdman@health.nsw.gov.au",
+          "id": "81ceea66-c143-48c3-ba89-98ca5a06416c",
+          "displayName": "Amy Herdman (Northern Sydney LHD)"
+        }
+      },
+      "quota": {
+
+      }
+    },
+    {
+      "createdBy": {
+        "user": {
+          "displayName": "System Account"
+        }
+      },
+      "createdDateTime": "2024-03-16T13:01:57Z",
+      "description": "",
+      "id": "b!dHn-JRylhkSnuMXEfNHvWgAlaJUeGHlIsoOz628jDkrFmPylxTfESqSjrrD8Z6-J",
+      "lastModifiedBy": {
+        "user": {
+          "email": "David.Lewis1@health.nsw.gov.au",
+          "id": "8389d72c-6428-43f4-a88d-fe69f249f338",
+          "displayName": "David Lewis (Northern Sydney LHD)"
+        }
+      },
+      "lastModifiedDateTime": "2024-06-19T05:38:57Z",
+      "name": "Documents",
+      "webUrl": "https://nswhealth.sharepoint.com/sites/NSLHDHITH-Resources/Shared%20Documents",
+      "driveType": "documentLibrary",
+      "owner": {
+        "user": {
+          "email": "Amy.Herdman@health.nsw.gov.au",
+          "id": "81ceea66-c143-48c3-ba89-98ca5a06416c",
+          "displayName": "Amy Herdman (Northern Sydney LHD)"
+        }
+      },
+      "quota": {
+
+      }
+    },
+    {
+      "createdBy": {
+        "user": {
+          "email": "Sweta.Sweta@health.nsw.gov.au",
+          "id": "859beb35-d1c5-405f-bb79-975140cc9f07",
+          "displayName": "Sweta Sweta (eHealth NSW)"
+        }
+      },
+      "createdDateTime": "2024-04-04T12:16:35Z",
+      "description": "",
+      "id": "b!dHn-JRylhkSnuMXEfNHvWgAlaJUeGHlIsoOz628jDkq8ug4SE99PQoo0sxig2IdO",
+      "lastModifiedBy": {
+        "user": {
+          "email": "David.Lewis1@health.nsw.gov.au",
+          "id": "8389d72c-6428-43f4-a88d-fe69f249f338",
+          "displayName": "David Lewis (Northern Sydney LHD)"
+        }
+      },
+      "lastModifiedDateTime": "2025-10-08T23:16:06Z",
+      "name": "Clinical Resources",
+      "webUrl": "https://nswhealth.sharepoint.com/sites/NSLHDHITH-Resources/Clinical%20Resources",
+      "driveType": "documentLibrary",
+      "owner": {
+        "user": {
+          "email": "Amy.Herdman@health.nsw.gov.au",
+          "id": "81ceea66-c143-48c3-ba89-98ca5a06416c",
+          "displayName": "Amy Herdman (Northern Sydney LHD)"
+        }
+      },
+      "quota": {
+
+      }
+    },
+    {
+      "createdBy": {
+        "user": {
+          "email": "heather.thomson@health.nsw.gov.au",
+          "id": "014ca4d3-9a98-4cab-bee2-2cad795d44f2",
+          "displayName": "Heather Thomson (Northern Sydney LHD)"
+        }
+      },
+      "createdDateTime": "2024-04-30T00:58:41Z",
+      "description": "",
+      "id": "b!dHn-JRylhkSnuMXEfNHvWgAlaJUeGHlIsoOz628jDkqAK6XSFstkQKA8w2U-JhKM",
+      "lastModifiedBy": {
+        "user": {
+          "email": "heather.thomson@health.nsw.gov.au",
+          "id": "014ca4d3-9a98-4cab-bee2-2cad795d44f2",
+          "displayName": "Heather Thomson (Northern Sydney LHD)"
+        }
+      },
+      "lastModifiedDateTime": "2024-04-30T00:58:41Z",
+      "name": "Digital Badge Assets",
+      "webUrl": "https://nswhealth.sharepoint.com/sites/NSLHDHITH-Resources/Digital%20Badge%20Assets",
+      "driveType": "documentLibrary",
+      "owner": {
+        "user": {
+          "email": "Amy.Herdman@health.nsw.gov.au",
+          "id": "81ceea66-c143-48c3-ba89-98ca5a06416c",
+          "displayName": "Amy Herdman (Northern Sydney LHD)"
+        }
+      },
+      "quota": {
+
+      }
+    },
+    {
+      "createdBy": {
+        "user": {
+          "email": "Sweta.Sweta@health.nsw.gov.au",
+          "id": "859beb35-d1c5-405f-bb79-975140cc9f07",
+          "displayName": "Sweta Sweta (eHealth NSW)"
+        }
+      },
+      "createdDateTime": "2024-04-05T04:43:53Z",
+      "description": "",
+      "id": "b!dHn-JRylhkSnuMXEfNHvWgAlaJUeGHlIsoOz628jDkr3NOKNYbguTYVK0jgxaURi",
+      "lastModifiedBy": {
+        "user": {
+          "email": "Samantha.Chan@health.nsw.gov.au",
+          "id": "db8e9b68-959a-4aa2-bdf0-d697a97c645e",
+          "displayName": "Samantha Chan (Northern Sydney LHD)"
+        }
+      },
+      "lastModifiedDateTime": "2025-09-13T07:10:24Z",
+      "name": "Presentations",
+      "webUrl": "https://nswhealth.sharepoint.com/sites/NSLHDHITH-Resources/Presentations",
+      "driveType": "documentLibrary",
+      "owner": {
+        "user": {
+          "email": "Amy.Herdman@health.nsw.gov.au",
+          "id": "81ceea66-c143-48c3-ba89-98ca5a06416c",
+          "displayName": "Amy Herdman (Northern Sydney LHD)"
+        }
+      },
+      "quota": {
+
+      }
+    },
+    {
+      "createdBy": {
+        "user": {
+          "email": "Sweta.Sweta@health.nsw.gov.au",
+          "id": "859beb35-d1c5-405f-bb79-975140cc9f07",
+          "displayName": "Sweta Sweta (eHealth NSW)"
+        }
+      },
+      "createdDateTime": "2024-04-04T12:15:49Z",
+      "description": "",
+      "id": "b!dHn-JRylhkSnuMXEfNHvWgAlaJUeGHlIsoOz628jDkpJ5VD2QhISQrz04T0G9-Cz",
+      "lastModifiedBy": {
+        "user": {
+          "email": "Belinda.Kelly@health.nsw.gov.au",
+          "id": "9c8c3965-cc3f-4c25-ae6d-27322fae580c",
+          "displayName": "Belinda Kelly (Northern Sydney LHD)"
+        }
+      },
+      "lastModifiedDateTime": "2025-07-22T00:29:10Z",
+      "name": "Orientation",
+      "webUrl": "https://nswhealth.sharepoint.com/sites/NSLHDHITH-Resources/Orientation",
+      "driveType": "documentLibrary",
+      "owner": {
+        "user": {
+          "email": "Amy.Herdman@health.nsw.gov.au",
+          "id": "81ceea66-c143-48c3-ba89-98ca5a06416c",
+          "displayName": "Amy Herdman (Northern Sydney LHD)"
+        }
+      },
+      "quota": {
+
+      }
+    }
+  ]
+}

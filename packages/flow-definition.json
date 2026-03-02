@@ -1,0 +1,209 @@
+{
+  "name": "HITH_Liaison_ChildFlow",
+  "type": "Microsoft.Flow/flows",
+  "properties": {
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "AzureFunctionUrl": {
+          "type": "String",
+          "defaultValue": "https://REPLACE-FUNCTION-URL"
+        },
+        "AzureFunctionKey": {
+          "type": "String",
+          "defaultValue": "REPLACE-FUNCTION-KEY"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "fileName": {
+                  "type": "string"
+                },
+                "fileContentBase64": {
+                  "type": "string"
+                },
+                "docType": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "fileName",
+                "fileContentBase64"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Set_docType": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "docType",
+                "type": "string",
+                "value": "@{coalesce(triggerBody()?['docType'], if(contains(toLower(triggerBody()?['fileName']), 'cfs'), 'cfs', 'intake'))}"
+              }
+            ]
+          },
+          "runAfter": {}
+        },
+        "HTTP_Call_AI": {
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "@{parameters('AzureFunctionUrl')}",
+            "headers": {
+              "x-functions-key": "@{parameters('AzureFunctionKey')}",
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "modelId": "acba1d64-52f2-440b-b175-5849fa4cdead",
+              "documentBase64": "@{triggerBody()?['fileContentBase64']}",
+              "docType": "@{variables('docType')}"
+            }
+          },
+          "runAfter": {
+            "Set_docType": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Compose_Row": {
+          "type": "Compose",
+          "inputs": {
+            "Referrer": "@{coalesce(body('HTTP_Call_AI')?['Referrer'], '')}",
+            "Designation": "@{coalesce(body('HTTP_Call_AI')?['Designation'], '')}",
+            "refPhone": "@{coalesce(body('HTTP_Call_AI')?['refPhone'], '')}",
+            "ptLocation": "@{coalesce(body('HTTP_Call_AI')?['ptLocation'], body('HTTP_Call_AI')?['Location'], '')}",
+            "AMO": "@{coalesce(body('HTTP_Call_AI')?['AMO'], '')}",
+            "ID_Specialist": "@{coalesce(body('HTTP_Call_AI')?['ID_Specialist'], '')}",
+            "gpName": "@{coalesce(body('HTTP_Call_AI')?['gpName'], body('HTTP_Call_AI')?['GP_Name'], '')}",
+            "gpPhone": "@{coalesce(body('HTTP_Call_AI')?['gpPhone'], body('HTTP_Call_AI')?['GP_Phone'], '')}",
+            "gpLetter": "@{coalesce(body('HTTP_Call_AI')?['gpLetter'], body('HTTP_Call_AI')?['GP_Letter'], '')}",
+            "verbalAgreement": "@{coalesce(body('HTTP_Call_AI')?['verbalAgreement'], '')}",
+            "hithAgreement": "@{coalesce(body('HTTP_Call_AI')?['hithAgreement'], '')}",
+            "welcomeSMS": "@{coalesce(body('HTTP_Call_AI')?['welcomeSMS'], '')}",
+            "Fund": "@{coalesce(body('HTTP_Call_AI')?['Fund'], '')}",
+            "Fund_No": "@{coalesce(body('HTTP_Call_AI')?['Fund_No'], '')}",
+            "MRN": "@{coalesce(body('HTTP_Call_AI')?['MRN'], '')}",
+            "ptAge": "@{coalesce(body('HTTP_Call_AI')?['ptAge'], body('HTTP_Call_AI')?['Age'], '')}",
+            "ptSex": "@{coalesce(body('HTTP_Call_AI')?['ptSex'], '')}",
+            "hithDx": "@{coalesce(body('HTTP_Call_AI')?['hithDx'], '')}",
+            "hithMx": "@{coalesce(body('HTTP_Call_AI')?['hithMx'], '')}",
+            "intakeNote": "@{coalesce(body('HTTP_Call_AI')?['intakeNote'], body('HTTP_Call_AI')?['Clinical_Hx'], '')}",
+            "resusPlan": "@{coalesce(body('HTTP_Call_AI')?['resusPlan'], body('HTTP_Call_AI')?['ResusPlan'], '')}",
+            "PMHx": "@{coalesce(body('HTTP_Call_AI')?['PMHx'], '')}",
+            "micro": "@{coalesce(body('HTTP_Call_AI')?['micro'], body('HTTP_Call_AI')?['Micro'], '')}",
+            "eGFR": "@{coalesce(body('HTTP_Call_AI')?['eGFR'], '')}",
+            "WCC": "@{coalesce(body('HTTP_Call_AI')?['WCC'], '')}",
+            "CRP": "@{coalesce(body('HTTP_Call_AI')?['CRP'], '')}",
+            "Allergies": "@{coalesce(body('HTTP_Call_AI')?['Allergies'], '')}",
+            "Alerts": "@{coalesce(body('HTTP_Call_AI')?['Alerts'], '')}",
+            "socialHx": "@{coalesce(body('HTTP_Call_AI')?['socialHx'], body('HTTP_Call_AI')?['Social_Hx'], '')}",
+            "communityService": "@{coalesce(body('HTTP_Call_AI')?['communityService'], '')}",
+            "HVRA": "@{coalesce(body('HTTP_Call_AI')?['HVRA'], '')}",
+            "liaisonAx": "@{coalesce(body('HTTP_Call_AI')?['liaisonAx'], body('HTTP_Call_AI')?['LiaisonAx'], '')}",
+            "safetyNet": "@{coalesce(body('HTTP_Call_AI')?['safetyNet'], body('HTTP_Call_AI')?['SafetyNetEducation'], '')}",
+            "venousAccess": "@{coalesce(body('HTTP_Call_AI')?['venousAccess'], body('HTTP_Call_AI')?['VenousAccessInfo'], '')}",
+            "accessDevice": "@{coalesce(body('HTTP_Call_AI')?['accessDevice'], '')}",
+            "vitalSigns": "@{coalesce(body('HTTP_Call_AI')?['vitalSigns'], body('HTTP_Call_AI')?['VitalSigns'], '')}",
+            "ACC": "@{coalesce(body('HTTP_Call_AI')?['ACC'], body('HTTP_Call_AI')?['AlteredCallingCriteria'], '')}",
+            "Height": "@{coalesce(body('HTTP_Call_AI')?['Height'], '')}",
+            "Weight": "@{coalesce(body('HTTP_Call_AI')?['Weight'], '')}",
+            "painAx": "@{coalesce(body('HTTP_Call_AI')?['painAx'], body('HTTP_Call_AI')?['PainAx'], '')}",
+            "painMx": "@{coalesce(body('HTTP_Call_AI')?['painMx'], body('HTTP_Call_AI')?['PainMx'], '')}",
+            "woundPlan": "@{coalesce(body('HTTP_Call_AI')?['woundPlan'], body('HTTP_Call_AI')?['WoundPlan'], '')}",
+            "foodIntake": "@{coalesce(body('HTTP_Call_AI')?['foodIntake'], '')}",
+            "fluidIntake": "@{coalesce(body('HTTP_Call_AI')?['fluidIntake'], body('HTTP_Call_AI')?['PO_Intake'], '')}",
+            "Elimination": "@{coalesce(body('HTTP_Call_AI')?['Elimination'], body('HTTP_Call_AI')?['EliminationStatus'], '')}",
+            "mobility": "@{coalesce(body('HTTP_Call_AI')?['mobility'], body('HTTP_Call_AI')?['MobilityADLs'], '')}",
+            "ADLs": "@{coalesce(body('HTTP_Call_AI')?['ADLs'], '')}",
+            "firstVisit": "@{coalesce(body('HTTP_Call_AI')?['firstVisit'], body('HTTP_Call_AI')?['First_Date'], '')}",
+            "firstTime": "@{coalesce(body('HTTP_Call_AI')?['firstTime'], body('HTTP_Call_AI')?['First_Time'], '')}",
+            "TxPlan": "@{coalesce(body('HTTP_Call_AI')?['TxPlan'], body('HTTP_Call_AI')?['Tx_plan'], '')}",
+            "reviewAMO": "@{coalesce(body('HTTP_Call_AI')?['reviewAMO'], body('HTTP_Call_AI')?['AMO_Review'], '')}",
+            "amoReview": "@{coalesce(body('HTTP_Call_AI')?['amoReview'], body('HTTP_Call_AI')?['ReviewDateTime'], '')}",
+            "hithEDD": "@{coalesce(body('HTTP_Call_AI')?['hithEDD'], '')}"
+          },
+          "runAfter": {
+            "HTTP_Call_AI": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Excel_Add_Row": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_excelonlinebusiness",
+              "operationId": "AddArowIntoATable",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+            },
+            "parameters": {
+              "source": "OneDriveForBusiness",
+              "drive": "default",
+              "file": "C:/Users/52006731/OneDrive - NSW Health Department/NSLHD HITH-Resources - GP Liaison/07 Intake to Admit/Data/form-data.xlsx",
+              "table": "tbl_doc_data",
+              "item": "@outputs('Compose_Row')"
+            },
+            "authentication": "@connection('shared_excelonlinebusiness')"
+          },
+          "runAfter": {
+            "Compose_Row": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Word_Populate": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_wordonlinebusiness",
+              "operationId": "PopulateDocument",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_wordonlinebusiness"
+            },
+            "parameters": {
+              "documentLibrary": "OneDriveForBusiness",
+              "documentLocation": "C:/Users/52006731/OneDrive - NSW Health Department/NSLHD HITH-Resources - GP Liaison/07 Intake to Admit/Liaison/Liaison Admit Template.docx",
+              "data": "@outputs('Compose_Row')"
+            },
+            "authentication": "@connection('shared_wordonlinebusiness')"
+          },
+          "runAfter": {
+            "Excel_Add_Row": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Respond_to_Parent": {
+          "type": "Response",
+          "kind": "Button",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "excel": "row appended",
+              "word": "populated",
+              "docType": "@{variables('docType')}"
+            }
+          },
+          "runAfter": {
+            "Word_Populate": [
+              "Succeeded"
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "displayName": "HITH \u2013 Liaison Child Flow (Template)",
+    "state": "Started"
+  }
+}
