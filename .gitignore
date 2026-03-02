@@ -6,11 +6,17 @@ Temp/**
 .DS_Store
 Thumbs.db
 *.swp
+desktop.ini
+
+# Node / npm
+node_modules/
+npm-debug.log*
 
 # Optional: ignore bulky ephemeral exports
 02-Output/**/*.zip
 02-Output/**/*.xlsx
 
-# Secrets
+# Secrets / environment
 *.env
 *.env.*
+.env.local
