@@ -1,0 +1,6 @@
+- name: Lint Markdown
+  continue-on-error: true
+  uses: DavidAnson/markdownlint-cli2-action@v19
+  with:
+    globs: |
+      **/*.md
