@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "1.0",
+  "tables": [
+    {
+      "logicalName": "hith_admitchunk",
+      "displayName": "HITH Admit Chunk",
+      "pluralDisplayName": "HITH Admit Chunks",
+      "description": "Stores AI-extracted key-value chunks from patient admission documents processed by the HITH-OCR-model.",
+      "columns": [
+        {
+          "logicalName": "hith_admitchunkid",
+          "displayName": "HITH Admit Chunk ID",
+          "type": "PrimaryKey",
+          "isPrimary": true
+        },
+        {
+          "logicalName": "hith_sourcefile",
+          "displayName": "Source File Name",
+          "type": "SingleLine.Text",
+          "maxLength": 500,
+          "description": "Name of the source document uploaded to the SharePoint input folder."
+        },
+        {
+          "logicalName": "hith_sourcefileid",
+          "displayName": "Source File ID",
+          "type": "SingleLine.Text",
+          "maxLength": 500,
+          "description": "SharePoint unique identifier for the source document."
+        },
+        {
+          "logicalName": "hith_keytext",
+          "displayName": "Key Text",
+          "type": "SingleLine.Text",
+          "maxLength": 1000,
+          "description": "The field label or key extracted by the HITH-OCR-model."
+        },
+        {
+          "logicalName": "hith_valuetext",
+          "displayName": "Value Text",
+          "type": "MultiLine.Text",
+          "maxLength": 4000,
+          "description": "The field value or content extracted by the HITH-OCR-model."
+        },
+        {
+          "logicalName": "hith_confidence",
+          "displayName": "Confidence Score",
+          "type": "Decimal",
+          "minValue": 0,
+          "maxValue": 1,
+          "description": "AI model confidence score (0-1) for the extracted key-value pair."
+        },
+        {
+          "logicalName": "hith_chunkindex",
+          "displayName": "Chunk Index",
+          "type": "WholeNumber",
+          "description": "Zero-based index of this chunk within the processed document."
+        },
+        {
+          "logicalName": "hith_processedat",
+          "displayName": "Processed At",
+          "type": "DateTime",
+          "description": "UTC timestamp when this chunk was extracted and stored."
+        },
+        {
+          "logicalName": "hith_admitdocumenturl",
+          "displayName": "Admit Document URL",
+          "type": "SingleLine.URL",
+          "maxLength": 2000,
+          "description": "SharePoint URL of the populated HL Admit Template generated from this document."
+        },
+        {
+          "logicalName": "hith_processstatus",
+          "displayName": "Process Status",
+          "type": "OptionSet",
+          "description": "Current processing state of the document.",
+          "options": [
+            { "value": 1, "label": "Pending" },
+            { "value": 2, "label": "Processing" },
+            { "value": 3, "label": "Completed" },
+            { "value": 4, "label": "Failed" }
+          ]
+        }
+      ]
+    }
+  ]
+}
