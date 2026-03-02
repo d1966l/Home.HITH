@@ -4,3 +4,6 @@
   with:
     globs: |
       **/*.md
+       - name: Lint Markdown
++        continue-on-error: true
+         run: markdownlint "**/*.md"
