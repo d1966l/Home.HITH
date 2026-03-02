@@ -1,16 +1,32 @@
-# Temp & caches (keep folder, ignore contents)
+# -----------------------------
+# Home-HITH repository ignores
+# -----------------------------
+
+# Temp & caches (keep folder, ignore its contents)
 Temp/**
 !Temp/.gitkeep
 
-# OS/editor cruft
+# Outputs that are bulky/ephemeral (adjust as needed)
+02-Output/**/*.zip
+02-Output/**/*.xlsx
+02-Output/**/*.csv
+
+# Common secrets
+*.env
+*.env.*
+.env
+secrets*.json
+credentials*.json
+
+# OS/editor noise
 .DS_Store
 Thumbs.db
 *.swp
+*.swo
 
-# Optional: ignore bulky ephemeral exports
-02-Output/**/*.zip
-02-Output/**/*.xlsx
-
-# Secrets
-*.env
-*.env.*
+# Node/Python/venv (uncomment if used)
+# node_modules/
+# dist/
+# .venv/
+# __pycache__/
+``
