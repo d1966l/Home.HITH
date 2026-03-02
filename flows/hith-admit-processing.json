@@ -1,0 +1,522 @@
+{
+  "definition": {
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "$connections": {
+        "defaultValue": {},
+        "type": "Object"
+      },
+      "SharePointSiteUrl": {
+        "defaultValue": "https://nslhd.sharepoint.com/sites/NSLHDHITH-Resources",
+        "type": "String"
+      },
+      "InputFolderPath": {
+        "defaultValue": "/Operational Resources/GP Liaison/07 Home+HITH/01-Input",
+        "type": "String"
+      },
+      "LiaisonFolderPath": {
+        "defaultValue": "/Operational Resources/GP Liaison/07 Home+HITH/Liaison",
+        "type": "String"
+      },
+      "AdmitTemplateName": {
+        "defaultValue": "HL Admit Template.docx",
+        "type": "String"
+      },
+      "DocDataFileName": {
+        "defaultValue": "doc-data.xlsx",
+        "type": "String"
+      },
+      "AIModelName": {
+        "defaultValue": "HITH-OCR-model",
+        "type": "String"
+      },
+      "DataverseTableName": {
+        "defaultValue": "hith_admitchunk",
+        "type": "String"
+      }
+    },
+    "triggers": {
+      "When_a_file_is_created_or_modified": {
+        "type": "ApiConnection",
+        "inputs": {
+          "host": {
+            "connection": {
+              "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+            }
+          },
+          "method": "get",
+          "path": "/datasets/@{encodeURIComponent(encodeURIComponent(parameters('SharePointSiteUrl')))}/triggers/onupdatedfile",
+          "queries": {
+            "folderId": "@{encodeURIComponent(parameters('InputFolderPath'))}",
+            "inferContentType": true,
+            "includeSubfolders": false
+          }
+        },
+        "recurrence": {
+          "frequency": "Minute",
+          "interval": 5
+        },
+        "splitOn": "@triggerBody()"
+      }
+    },
+    "actions": {
+      "Initialize_ProcessedChunks": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "ProcessedChunks",
+              "type": "array",
+              "value": []
+            }
+          ]
+        },
+        "runAfter": {}
+      },
+      "Initialize_TemplateFields": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "TemplateFields",
+              "type": "object",
+              "value": {}
+            }
+          ]
+        },
+        "runAfter": {
+          "Initialize_ProcessedChunks": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Get_file_content": {
+        "type": "ApiConnection",
+        "inputs": {
+          "host": {
+            "connection": {
+              "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+            }
+          },
+          "method": "get",
+          "path": "/datasets/@{encodeURIComponent(encodeURIComponent(parameters('SharePointSiteUrl')))}/files/@{encodeURIComponent(triggerBody()?['Id'])}/content",
+          "queries": {
+            "inferContentType": true
+          }
+        },
+        "runAfter": {
+          "Initialize_TemplateFields": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Process_document_with_AI_model": {
+        "type": "ApiConnection",
+        "inputs": {
+          "host": {
+            "connection": {
+              "name": "@parameters('$connections')['aibuilder']['connectionId']"
+            }
+          },
+          "method": "post",
+          "path": "/text/v1.0/predictFromFile",
+          "queries": {
+            "modelId": "@parameters('AIModelName')"
+          },
+          "body": {
+            "file": {
+              "contentBytes": "@{base64(body('Get_file_content'))}",
+              "contentType": "@triggerBody()?['MediaType']",
+              "fileName": "@triggerBody()?['Name']"
+            }
+          }
+        },
+        "runAfter": {
+          "Get_file_content": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Parse_AI_model_response": {
+        "type": "ParseJson",
+        "inputs": {
+          "content": "@body('Process_document_with_AI_model')",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string"
+              },
+              "analyzeResult": {
+                "type": "object",
+                "properties": {
+                  "keyValuePairs": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "object",
+                          "properties": {
+                            "content": { "type": "string" }
+                          }
+                        },
+                        "value": {
+                          "type": "object",
+                          "properties": {
+                            "content": { "type": "string" }
+                          }
+                        },
+                        "confidence": { "type": "number" }
+                      }
+                    }
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "pages": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "pageNumber": { "type": "integer" },
+                        "lines": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "content": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "runAfter": {
+          "Process_document_with_AI_model": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Chunk_key_value_pairs": {
+        "type": "Foreach",
+        "foreach": "@body('Parse_AI_model_response')?['analyzeResult']?['keyValuePairs']",
+        "actions": {
+          "Append_chunk_to_array": {
+            "type": "AppendToArrayVariable",
+            "inputs": {
+              "name": "ProcessedChunks",
+              "value": {
+                "sourceFile": "@triggerBody()?['Name']",
+                "sourceFileId": "@triggerBody()?['Id']",
+                "keyText": "@items('Chunk_key_value_pairs')?['key']?['content']",
+                "valueText": "@items('Chunk_key_value_pairs')?['value']?['content']",
+                "confidence": "@items('Chunk_key_value_pairs')?['confidence']",
+                "processedAt": "@utcNow()"
+              }
+            }
+          }
+        },
+        "runAfter": {
+          "Parse_AI_model_response": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Save_chunks_to_Dataverse": {
+        "type": "Foreach",
+        "foreach": "@variables('ProcessedChunks')",
+        "actions": {
+          "Create_Dataverse_row": {
+            "type": "ApiConnection",
+            "inputs": {
+              "host": {
+                "connection": {
+                  "name": "@parameters('$connections')['commondataservice']['connectionId']"
+                }
+              },
+              "method": "post",
+              "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('default.cds.microsoft.com'))}/tables/@{encodeURIComponent(encodeURIComponent(parameters('DataverseTableName')))}/items",
+              "body": {
+                "hith_sourcefile": "@{items('Save_chunks_to_Dataverse')?['sourceFile']}",
+                "hith_sourcefileid": "@{items('Save_chunks_to_Dataverse')?['sourceFileId']}",
+                "hith_keytext": "@{items('Save_chunks_to_Dataverse')?['keyText']}",
+                "hith_valuetext": "@{items('Save_chunks_to_Dataverse')?['valueText']}",
+                "hith_confidence": "@{items('Save_chunks_to_Dataverse')?['confidence']}",
+                "hith_processedat": "@{items('Save_chunks_to_Dataverse')?['processedAt']}",
+                "hith_processstatus": 2
+              }
+            }
+          }
+        },
+        "runAfter": {
+          "Chunk_key_value_pairs": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Get_doc_data_xlsx": {
+        "type": "ApiConnection",
+        "inputs": {
+          "host": {
+            "connection": {
+              "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+            }
+          },
+          "method": "get",
+          "path": "/datasets/@{encodeURIComponent(encodeURIComponent(parameters('SharePointSiteUrl')))}/foldersV2/@{encodeURIComponent(encodeURIComponent(parameters('LiaisonFolderPath')))}/files",
+          "queries": {
+            "$filter": "Name eq '@{parameters('DocDataFileName')}'"
+          }
+        },
+        "runAfter": {
+          "Save_chunks_to_Dataverse": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Get_doc_data_table_rows": {
+        "type": "ApiConnection",
+        "inputs": {
+          "host": {
+            "connection": {
+              "name": "@parameters('$connections')['excelonlinebusiness']['connectionId']"
+            }
+          },
+          "method": "get",
+          "path": "/drives/@{encodeURIComponent(body('Get_doc_data_xlsx')?['value']?[0]?['DriveId'])}/files/@{encodeURIComponent(body('Get_doc_data_xlsx')?['value']?[0]?['Id'])}/workbook/tables/Table1/rows",
+          "queries": {
+            "$top": 500
+          }
+        },
+        "runAfter": {
+          "Get_doc_data_xlsx": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Map_fields_from_doc_data": {
+        "type": "Foreach",
+        "foreach": "@body('Get_doc_data_table_rows')?['value']",
+        "actions": {
+          "Find_matching_AI_value": {
+            "type": "Foreach",
+            "foreach": "@variables('ProcessedChunks')",
+            "actions": {
+              "Check_key_match": {
+                "type": "Condition",
+                "expression": {
+                  "and": [
+                    {
+                      "equals": [
+                        "@toLower(trim(items('Find_matching_AI_value')?['keyText']))",
+                        "@toLower(trim(items('Map_fields_from_doc_data')?['values']?[0]?[0]))"
+                      ]
+                    }
+                  ]
+                },
+                "actions": {
+                  "Set_template_field": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "TemplateFields",
+                      "value": "@union(variables('TemplateFields'), createObject(string(items('Map_fields_from_doc_data')?['values']?[0]?[1]), string(items('Find_matching_AI_value')?['valueText'])))"
+                    }
+                  }
+                },
+                "else": {
+                  "actions": {}
+                }
+              }
+            }
+          }
+        },
+        "runAfter": {
+          "Get_doc_data_table_rows": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Get_admit_template_content": {
+        "type": "ApiConnection",
+        "inputs": {
+          "host": {
+            "connection": {
+              "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+            }
+          },
+          "method": "get",
+          "path": "/datasets/@{encodeURIComponent(encodeURIComponent(parameters('SharePointSiteUrl')))}/GetFileContentByPath",
+          "queries": {
+            "path": "@{parameters('LiaisonFolderPath')}/@{parameters('AdmitTemplateName')}",
+            "inferContentType": true
+          }
+        },
+        "runAfter": {
+          "Map_fields_from_doc_data": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Populate_admit_template": {
+        "type": "ApiConnection",
+        "inputs": {
+          "host": {
+            "connection": {
+              "name": "@parameters('$connections')['wordonlinebusiness']['connectionId']"
+            }
+          },
+          "method": "post",
+          "path": "/templates/@{encodeURIComponent(encodeURIComponent(parameters('SharePointSiteUrl')))}/drives/@{encodeURIComponent(body('Get_doc_data_xlsx')?['value']?[0]?['DriveId'])}/files/@{encodeURIComponent(body('Get_admit_template_content')?['Id'])}/populate",
+          "body": "@variables('TemplateFields')"
+        },
+        "runAfter": {
+          "Get_admit_template_content": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Create_populated_admit_document": {
+        "type": "ApiConnection",
+        "inputs": {
+          "host": {
+            "connection": {
+              "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+            }
+          },
+          "method": "post",
+          "path": "/datasets/@{encodeURIComponent(encodeURIComponent(parameters('SharePointSiteUrl')))}/files",
+          "queries": {
+            "folderPath": "@{concat(parameters('LiaisonFolderPath'), '/Completed')}",
+            "name": "@{concat('ADMIT-', formatDateTime(utcNow(), 'yyyyMMdd-HHmmss'), '-', triggerBody()?['Name'])}",
+            "overwrite": true
+          },
+          "body": "@body('Populate_admit_template')"
+        },
+        "runAfter": {
+          "Populate_admit_template": [
+            "Succeeded"
+          ]
+        }
+      },
+      "List_Dataverse_rows_for_source_file": {
+        "type": "ApiConnection",
+        "inputs": {
+          "host": {
+            "connection": {
+              "name": "@parameters('$connections')['commondataservice']['connectionId']"
+            }
+          },
+          "method": "get",
+          "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('default.cds.microsoft.com'))}/tables/@{encodeURIComponent(encodeURIComponent(parameters('DataverseTableName')))}/items",
+          "queries": {
+            "$filter": "hith_sourcefileid eq '@{triggerBody()?['Id']}'"
+          }
+        },
+        "runAfter": {
+          "Create_populated_admit_document": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Update_Dataverse_status_to_Completed": {
+        "type": "Foreach",
+        "foreach": "@body('List_Dataverse_rows_for_source_file')?['value']",
+        "actions": {
+          "Patch_Dataverse_row": {
+            "type": "ApiConnection",
+            "inputs": {
+              "host": {
+                "connection": {
+                  "name": "@parameters('$connections')['commondataservice']['connectionId']"
+                }
+              },
+              "method": "patch",
+              "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('default.cds.microsoft.com'))}/tables/@{encodeURIComponent(encodeURIComponent(parameters('DataverseTableName')))}/items/@{encodeURIComponent(items('Update_Dataverse_status_to_Completed')?['hith_admitchunkid'])}",
+              "body": {
+                "hith_processstatus": 3,
+                "hith_admitdocumenturl": "@{concat(parameters('SharePointSiteUrl'), body('Create_populated_admit_document')?['Path'])}"
+              }
+            }
+          }
+        },
+        "runAfter": {
+          "List_Dataverse_rows_for_source_file": [
+            "Succeeded"
+          ]
+        }
+      },
+      "Wait_for_next_trigger": {
+        "type": "Wait",
+        "inputs": {
+          "interval": {
+            "count": 1,
+            "unit": "Minute"
+          }
+        },
+        "runAfter": {
+          "Update_Dataverse_status_to_Completed": [
+            "Succeeded"
+          ]
+        }
+      }
+    },
+    "outputs": {}
+  },
+  "connectionReferences": {
+    "sharepointonline": {
+      "runtimeSource": "embedded",
+      "connection": {
+        "connectionReferenceLogicalName": "hith_sharepointonline"
+      },
+      "api": {
+        "name": "sharepointonline"
+      }
+    },
+    "aibuilder": {
+      "runtimeSource": "embedded",
+      "connection": {
+        "connectionReferenceLogicalName": "hith_aibuilder"
+      },
+      "api": {
+        "name": "aibuilder"
+      }
+    },
+    "commondataservice": {
+      "runtimeSource": "embedded",
+      "connection": {
+        "connectionReferenceLogicalName": "hith_commondataservice"
+      },
+      "api": {
+        "name": "commondataservice"
+      }
+    },
+    "excelonlinebusiness": {
+      "runtimeSource": "embedded",
+      "connection": {
+        "connectionReferenceLogicalName": "hith_excelonlinebusiness"
+      },
+      "api": {
+        "name": "excelonlinebusiness"
+      }
+    },
+    "wordonlinebusiness": {
+      "runtimeSource": "embedded",
+      "connection": {
+        "connectionReferenceLogicalName": "hith_wordonlinebusiness"
+      },
+      "api": {
+        "name": "wordonlinebusiness"
+      }
+    }
+  },
+  "environment": {
+    "name": "Default"
+  }
+}
