@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  markdown-lint:
+    name: Markdown lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Lint Markdown files
+        uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: "**/*.md"
+          config: |
+            {
+              "default": true,
+              "MD013": false,
+              "MD033": false,
+              "MD041": false
+            }
+
+  large-file-check:
+    name: Large file check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Warn about large binaries (> 5 MB)
+        shell: bash
+        run: |
+          echo "Checking for files larger than 5 MB..."
+          LARGE_FILES=$(find . -not -path './.git/*' -size +5M -type f)
+          if [ -n "$LARGE_FILES" ]; then
+            echo "⚠️  The following files exceed 5 MB. Consider storing them on SharePoint or using Git LFS:"
+            echo "$LARGE_FILES"
+          else
+            echo "✅ No files exceed 5 MB."
+          fi

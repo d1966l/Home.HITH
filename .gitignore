@@ -1,16 +1,53 @@
-# Temp & caches (keep folder, ignore contents)
+# ── OS / editor cruft ─────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Common editor temp/swap files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# ── Temp folder (keep directory, ignore contents) ─────────────────────────────
 Temp/**
 !Temp/.gitkeep
 
-# OS/editor cruft
-.DS_Store
-Thumbs.db
-*.swp
-
-# Optional: ignore bulky ephemeral exports
+# ── Ephemeral output exports ───────────────────────────────────────────────────
+# Ignore ZIP exports from Power Automate solution builder and bulk output files
+# that should live on SharePoint, not in the repo.
 02-Output/**/*.zip
 02-Output/**/*.xlsx
+Output/**/*.zip
+Output/**/*.pdf
+Output/**/*.docx
 
-# Secrets
+# ── Secrets / environment files ───────────────────────────────────────────────
+.env
+.env.*
 *.env
-*.env.*
+secrets.json
+
+# ── Node / npm (if tooling is ever added) ─────────────────────────────────────
+node_modules/
+npm-debug.log*
+
+# ── Python (if tooling is ever added) ─────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+
+# NOTE: The following tracked assets are intentionally NOT ignored:
+#   Data/form-data.xlsx
+#   Liaison/Liaison Admit Template.docx
+#   Liaison/Liaison Admit Template.dotx
+#   Liaison/HL-Admit-Mapped-Namespaced.xml
+#   packages/**
